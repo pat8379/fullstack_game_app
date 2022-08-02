@@ -18,7 +18,8 @@ const oAuthSchema = mongoose.Schema(
         required: true,
       },
       score: {
-        type: Number
+        type: Number,
+        default: 0
       },
       createdAt: {
         type: Date,

@@ -11,7 +11,7 @@ const MongoStore = require('connect-mongo');
 
 const app = express()
 
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 5001
 
 connectDB()
 
@@ -23,7 +23,7 @@ const sessionStore = MongoStore.create({ mongoUrl: process.env.ATLAS_URI, collec
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: sessionStore,
     cookie: {
         maxAge: 1000 * 60 * 60 * 6
@@ -35,7 +35,17 @@ require('./passport')
 app.use(passport.initialize());
 app.use(passport.session());
 
+// app.use((req, res, next) => {
+//   console.log(req.session);
+//   console.log(req.user);
+//   console.log(req.isAuthenticated())
+//   next();
+// });
+
 // Routes
+app.use('/api/users', require('./routes/usersRouter'))
+app.use('/auth', require('./routes/oathRouter'))
+
 
 // if (process.env.NODE_ENV === 'production') {
 //     app.use(express.static(path.join(__dirname, '../frontend/build')))
