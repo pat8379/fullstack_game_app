@@ -8,9 +8,9 @@ oAuthRouter.get(
     passport.authenticate('google', { failureMessage: true }),
     (req, res) => {
         // res.send("sent")
-        res.send(req.user)
+        // res.send(req.user)
         // console.log(req.user)
-        // res.redirect('/')
+        res.redirect('/')
     }
   )
 

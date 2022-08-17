@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import scoreSlicer from '../features/scoreSlice'
-import leaderBoardSlicer from '../features/leaderBoardSlice'
+import scoreSlice from '../features/scoreSlice'
+import leaderBoardSlice from '../features/leaderBoardSlice'
+import userSlice from "../features/userSlice";
 
 export default configureStore({
     reducer: {
-      scores: scoreSlicer,
-      leaderBoard: leaderBoardSlicer
+      score: scoreSlice,
+      leaderboard: leaderBoardSlice,
+      user: userSlice
     },
   });

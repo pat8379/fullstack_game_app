@@ -3,17 +3,43 @@ import { Outlet,useLocation } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom'
-
-
+import { useSelector, useDispatch } from 'react-redux'
+import { selectUser, addUser, startLoading, stopLoading } from '../features/userSlice';
 
 
 function App() {
   let navigate = useNavigate();
+  const dispatch = useDispatch()
+  const user = useSelector(selectUser)
   const location = useLocation();
   const [value, setValue] = useState(location.pathname)
+
+  useEffect(() => {
+    if (user) {
+      return
+    }
+    const fetchData = async () => {
+      dispatch(startLoading())
+      try {
+        const data = await fetch('/api/users/info')
+        const result = await data.json()
+        dispatch(stopLoading())
+        if (data.status === 200) {
+          dispatch(addUser(result))
+        }        
+      } catch (error) {
+        dispatch(stopLoading())
+        console.log(error)
+      }
+      return
+    }
+
+    fetchData()
+    // console.log('app load')
+  }, [])
 
   // console.log(location.pathname)
 
@@ -31,7 +57,7 @@ function App() {
           // maxWidth: "230px"
         }}
         
-        >Poke the Jepai</Typography>
+        >Tap the Jepai</Typography>
         <Box sx={{ borderBottom: 1, borderColor: 'divider',
          display: "flex",
          flexDirection: 'row',
@@ -77,8 +103,8 @@ function App() {
             About
           </Button>
         </Box>
-        <Outlet/>
       </Container>
+      <Outlet/>
     </div>
   );
 }

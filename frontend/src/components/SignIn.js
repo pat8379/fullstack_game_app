@@ -13,12 +13,16 @@ import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import LoginIcon from '@mui/icons-material/Login';
 import { useNavigate } from 'react-router-dom'
 import Switch from '@mui/material/Switch';
-
+import HomeIcon from '@mui/icons-material/Home';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useDispatch, useSelector } from 'react-redux';
+import { addUser, selectUser } from '../features/userSlice';
 
 
 export default function SignIn() {
   let navigate = useNavigate();
-
+  let user = useSelector(selectUser)
+  const dispatch = useDispatch()
   const [username,setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [username2,setUsername2] = useState('')
@@ -26,6 +30,9 @@ export default function SignIn() {
   const [errMsg, setErrMsg] = useState()
   const [errMsg2, setErrMsg2] = useState()
   const [newUser, setNewUser] = useState(false)
+
+  const [loading, setLoading] = useState(false)
+  const [loading2, setLoading2] = useState(false)
 
   const [showPass,setShowPass] = useState(false)
   const [showPass2,setShowPass2] = useState(false)
@@ -45,6 +52,8 @@ export default function SignIn() {
         setErrMsg('')
       }
     }
+    
+    setLoading(true)
 
     try {
       const body = {
@@ -58,9 +67,15 @@ export default function SignIn() {
         body: JSON.stringify(body)
       })
 
+
+      setLoading(false)
       if (results.status !== 200) {
         setErrMsg('User not found or incorrect password')
         return
+      }
+      const jsonResult = await results.json()
+      if (user) {
+        dispatch(addUser(jsonResult))
       }
       // console.log(results)
       navigate('/')
@@ -87,6 +102,8 @@ export default function SignIn() {
       }
     }
 
+    setLoading2(true)
+
     try {
       const body = {
         username: username2,
@@ -102,6 +119,7 @@ export default function SignIn() {
       const results = await response.json()
 
       if (results.message) {
+        setLoading2(false)
         setErrMsg2('Username already exists')
         return
       }
@@ -112,13 +130,20 @@ export default function SignIn() {
         body: JSON.stringify(body)
       })
 
+      setLoading2(false)
       if (results1.status !== 200) {
-        setErrMsg('User not found or incorrect password')
+        setErrMsg2('User not found or incorrect password')
         return
+      }
+      const jsonResult1 = await results1.json()
+
+      if (user) {
+        dispatch(addUser(jsonResult1))
       }
 
       navigate('/')
     } catch (error) {
+      setLoading2(false)
       console.log(error)
     }
   }
@@ -130,7 +155,7 @@ export default function SignIn() {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 2,
             mx: 1,
             display: 'flex',
             flexDirection: 'column',
@@ -220,6 +245,16 @@ export default function SignIn() {
             >
               Login
             </Button>
+            {loading && 
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                mb: 2
+              }}
+            >
+              <CircularProgress color='primary'/>
+            </Box>}
             {errMsg && 
               <Typography
                 variant="body2"
@@ -241,11 +276,20 @@ export default function SignIn() {
                 mb: 2
               }}
              fullWidth
-             href="/auth/google"
+             href="http://localhost:5001/auth/google"
             >
                 Login with Google
             </Button>
           </Box>
+          <Typography
+            variant='body2'
+            sx={{
+              color:"rgba(0, 0, 0, 0.6)",
+              mt: 1
+            }}
+          >
+            or if you are a new user
+          </Typography>
           <Box
             sx={{
               mx: 1,
@@ -254,15 +298,18 @@ export default function SignIn() {
           >
             <Button
             fullWidth
-            variant="text"
+            variant="outlined"
             startIcon={<ArrowDropDownIcon/>}
-            sx={{ mt: 2, mb: 2}}
-            onClick={() => setNewUser(prev => !prev)}
+            sx={{ mt: 1, mb: 1}}
+            onClick={() => {
+              setNewUser(prev => !prev)
+              // myRef.scrollIntoView()
+              // executeScroll()
+            }}
             >
               Create Account
             </Button>
           </Box>
-
 
           { newUser &&
           <>
@@ -338,9 +385,20 @@ export default function SignIn() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 2, mb: 2}}
+                // ref={myRef}
               >
                 Sign Up
               </Button>
+              {loading2 && 
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                mb: 2
+              }}
+            >
+              <CircularProgress color='primary'/>
+            </Box>}
               {errMsg2 && 
               <Typography
                 variant="body2"
@@ -356,6 +414,20 @@ export default function SignIn() {
             </Box>
             </>
           }
+          <Box>
+            <Button 
+              align='center'
+              variant="contained"
+              color="primary"
+              disableElevation
+              startIcon={<HomeIcon/>}
+              onClick={() => navigate('/')}
+              sx={{
+                  my: 1,
+                  color: 'white'
+              }}
+            >Home</Button>
+          </Box>
         </Box>
       </Container>
     </div>
