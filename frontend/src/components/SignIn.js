@@ -276,7 +276,7 @@ export default function SignIn() {
                 mb: 2
               }}
              fullWidth
-             href="http://localhost:5001/auth/google"
+             href="/auth/google"
             >
                 Login with Google
             </Button>
