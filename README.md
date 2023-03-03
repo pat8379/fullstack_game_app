@@ -8,4 +8,4 @@ User data such as credentials and highscores are stored in a MongoDB database.
 
 All passwords are encrypted with bcrypt.js.
 
-Deployed on Heroku - [Tap the Jepai](http://pats-tap-the-jepai.s3-website-ap-southeast-1.amazonaws.com/)
+Deployed on AWS s3 - [Tap the Jepai](http://pats-tap-the-jepai.s3-website-ap-southeast-1.amazonaws.com/)
